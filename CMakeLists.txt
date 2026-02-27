@@ -4,11 +4,23 @@ project(FixVocalNote VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(NOT DEFINED JUCE_DIR)
-  message(FATAL_ERROR "Please pass -DJUCE_DIR=/path/to/JUCE")
-endif()
+include(FetchContent)
 
-add_subdirectory(${JUCE_DIR} JUCE)
+set(FIXVOCALNOTE_JUCE_VERSION "8.0.7" CACHE STRING "JUCE version used when auto-fetching")
+
+if(DEFINED JUCE_DIR)
+  message(STATUS "Using JUCE_DIR=${JUCE_DIR}")
+  add_subdirectory(${JUCE_DIR} JUCE)
+else()
+  message(STATUS "JUCE_DIR not set, fetching JUCE ${FIXVOCALNOTE_JUCE_VERSION} from GitHub")
+  FetchContent_Declare(
+    juce
+    GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+    GIT_TAG ${FIXVOCALNOTE_JUCE_VERSION}
+    GIT_SHALLOW TRUE
+  )
+  FetchContent_MakeAvailable(juce)
+endif()
 
 juce_add_plugin(FixVocalNote
   COMPANY_NAME "CodexLab"
