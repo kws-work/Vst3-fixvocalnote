@@ -13,7 +13,7 @@ float midiToY(float midiNote, juce::Rectangle<int> area)
 
 void PitchCurveView::paint(juce::Graphics& g)
 {
-    const auto area = getLocalBounds().reduced(10);
+    auto area = getLocalBounds().reduced(10);
 
     g.fillAll(juce::Colour::fromRGB(20, 22, 28));
 
@@ -42,9 +42,10 @@ void PitchCurveView::paint(juce::Graphics& g)
     g.setColour(juce::Colour::fromRGB(255, 146, 0));
     g.strokePath(pitchPath, juce::PathStrokeType(2.3f));
 
+    auto titleArea = area.removeFromTop(22);
     g.setColour(juce::Colours::white.withAlpha(0.8f));
     g.setFont(14.0f);
-    g.drawText("Pitch Curve (Mock) - ARA2 ready UI scaffold", area.removeFromTop(22), juce::Justification::left);
+    g.drawText("Pitch Curve (Mock) - ARA2 ready UI scaffold", titleArea, juce::Justification::left);
 }
 
 FixVocalNoteAudioProcessorEditor::FixVocalNoteAudioProcessorEditor(FixVocalNoteAudioProcessor& p)

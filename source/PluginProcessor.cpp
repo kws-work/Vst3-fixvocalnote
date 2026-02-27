@@ -28,6 +28,14 @@ void FixVocalNoteAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, 
         buffer.clear(channel, 0, buffer.getNumSamples());
 }
 
+void FixVocalNoteAudioProcessor::processBlock(juce::AudioBuffer<double>& buffer, juce::MidiBuffer&)
+{
+    juce::ScopedNoDenormals noDenormals;
+
+    for (int channel = getTotalNumInputChannels(); channel < getTotalNumOutputChannels(); ++channel)
+        buffer.clear(channel, 0, buffer.getNumSamples());
+}
+
 juce::AudioProcessorEditor* FixVocalNoteAudioProcessor::createEditor()
 {
     return new FixVocalNoteAudioProcessorEditor(*this);
