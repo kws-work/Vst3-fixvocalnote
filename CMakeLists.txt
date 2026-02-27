@@ -7,12 +7,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(FetchContent)
 
 set(FIXVOCALNOTE_JUCE_VERSION "8.0.7" CACHE STRING "JUCE version used when auto-fetching")
+set(FIXVOCALNOTE_JUCE_ARCHIVE "" CACHE FILEPATH "Local JUCE source archive (.tar.gz/.zip) used for offline builds")
 
 if(DEFINED JUCE_DIR)
   message(STATUS "Using JUCE_DIR=${JUCE_DIR}")
   add_subdirectory(${JUCE_DIR} JUCE)
+elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/JUCE/CMakeLists.txt")
+  message(STATUS "Using vendored JUCE at third_party/JUCE")
+  add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/third_party/JUCE" JUCE)
+elseif(FIXVOCALNOTE_JUCE_ARCHIVE)
+  message(STATUS "Using local JUCE archive: ${FIXVOCALNOTE_JUCE_ARCHIVE}")
+  FetchContent_Declare(
+    juce
+    URL ${FIXVOCALNOTE_JUCE_ARCHIVE}
+  )
+  FetchContent_MakeAvailable(juce)
 else()
   message(STATUS "JUCE_DIR not set, fetching JUCE ${FIXVOCALNOTE_JUCE_VERSION} from GitHub")
+  message(STATUS "Hint: if your network blocks github.com, pass -DJUCE_DIR=/path/to/JUCE or -DFIXVOCALNOTE_JUCE_ARCHIVE=/path/to/JUCE.tar.gz")
   FetchContent_Declare(
     juce
     GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
